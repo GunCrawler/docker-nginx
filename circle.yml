@@ -6,7 +6,7 @@ machine:
 
 dependencies:
   override:
-    - sudo pip install awscli==1.10.3
+    - sudo pip install awscli==1.10.66
     - REGISTRY=$DOCKER_REGISTRY PROJECT=$DOCKER_IMAGE TAG=$DOCKER_TAG make build
 
 database:
