@@ -26,8 +26,10 @@ RUN \
   pip install awscli &&\
 # Copy default config files to /data
   /bin/bash -c "cp -a /etc/nginx/{conf.d,sites-enabled} /data/" &&\
-# Create /data/sites-templates directory
-  mkdir /data/sites-templates &&\
+# Create conf directories
+  mkdir -p /data/conf/ &&\
+  chmod 0755 /data/conf/ &&\
+  mkdir -p /data/sites-templates &&\
   chmod 0755 /data/sites-templates &&\
 # Clean up APT and temporary files when done
   apt-get clean &&\
