@@ -4,9 +4,6 @@ MAINTAINER Abe Voelker <abe@abevoelker.com>
 # Provide a custom nginx.conf, tweaked for Docker use
 COPY nginx.conf /data/conf/
 
-# Add nginx templating helper scripts
-COPY bin/ /usr/sbin/
-
 # Ensure UTF-8 locale
 COPY locale /etc/default/locale
 RUN \
@@ -16,11 +13,17 @@ RUN \
   apt-get update &&\
   DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common &&\
 # Add nginx PPA
-  apt-add-repository ppa:nginx/stable &&\
+  apt-add-repository ppa:nginx/development &&\
 # Update apt cache with PPA
   apt-get update &&\
-# Install nginx
-  DEBIAN_FRONTEND=noninteractive apt-get install -y nginx &&\
+# Install nginx and pip
+  DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  nginx \
+  python-software-properties \
+  python-pip \
+  software-properties-common &&\
+# Install AWS CLI
+  pip install awscli &&\
 # Copy default config files to /data
   /bin/bash -c "cp -a /etc/nginx/{conf.d,sites-enabled} /data/" &&\
 # Create /data/sites-templates directory
@@ -30,6 +33,9 @@ RUN \
   apt-get clean &&\
   DEBIAN_FRONTEND=noninteractive apt-get remove --purge -y software-properties-common &&\
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Add nginx templating helper scripts
+COPY bin/ /usr/bin/
 
 VOLUME ["/var/cache/nginx", "/var/log/nginx"]
 
